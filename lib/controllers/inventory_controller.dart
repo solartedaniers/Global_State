@@ -40,9 +40,17 @@ class InventoryController extends GetxController {
     ]);
   }
 
+  // ---------- GETTERS GLOBALES ----------
+  int get totalUnits =>
+      products.fold(0, (sum, p) => sum + p.stock);
+
+  double get totalValue =>
+      products.fold(0, (sum, p) => sum + (p.price * p.stock));
+
   List<Product> productsByCategory(String categoryId) =>
       products.where((p) => p.categoryId == categoryId).toList();
 
+  // ---------- CATEGORY CRUD ----------
   void addCategory(String name) {
     categories.add(Category(id: DateTime.now().toString(), name: name));
   }
@@ -52,6 +60,7 @@ class InventoryController extends GetxController {
     categories.removeWhere((c) => c.id == id);
   }
 
+  // ---------- PRODUCT CRUD ----------
   void addProduct(Product product) {
     products.add(product);
   }
@@ -60,6 +69,7 @@ class InventoryController extends GetxController {
     products.removeWhere((p) => p.id == id);
   }
 
+  // ---------- STOCK ----------
   void increaseStock(Product p) {
     p.stock++;
     products.refresh();
@@ -69,9 +79,5 @@ class InventoryController extends GetxController {
     if (p.stock == 0) return;
     p.stock--;
     products.refresh();
-
-    if (p.stock < 5) {
-      Get.snackbar("Low Stock", "${p.name} is running out");
-    }
   }
 }

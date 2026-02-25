@@ -16,51 +16,41 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: Image.network(
-              product.image,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+            child: Image.network(product.image,
+                fit: BoxFit.cover, width: double.infinity),
           ),
-
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(product.name,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16)),
-
-                const SizedBox(height: 4),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
 
                 Text(product.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 12)),
 
-                const SizedBox(height: 6),
-
                 Text("\$${product.price}",
-                    style: const TextStyle(
-                        color: Colors.green, fontWeight: FontWeight.bold)),
-
-                const SizedBox(height: 6),
+                    style: const TextStyle(color: Colors.green)),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                        onPressed: () => controller.decreaseStock(product),
-                        icon: const Icon(Icons.remove_circle_outline)),
-
+                        icon: const Icon(Icons.remove),
+                        onPressed: () => controller.decreaseStock(product)),
                     Text("${product.stock}"),
-
                     IconButton(
-                        onPressed: () => controller.increaseStock(product),
-                        icon: const Icon(Icons.add_circle_outline)),
+                        icon: const Icon(Icons.add),
+                        onPressed: () => controller.increaseStock(product)),
                   ],
                 ),
+
+                IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => controller.deleteProduct(product.id),
+                )
               ],
             ),
           )

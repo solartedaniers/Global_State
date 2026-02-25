@@ -4,7 +4,7 @@ class Product {
   final String name;
   final String description;
   final String image;
-  double price;
+  int price;
   int stock;
 
   Product({
