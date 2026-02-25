@@ -5,44 +5,70 @@ import 'products_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
   final controller = Get.put(InventoryController());
-  final TextEditingController nameCtrl = TextEditingController();
 
   CategoriesScreen({super.key});
-
-  void _addCategory() {
-    Get.defaultDialog(
-      title: "New Category",
-      content: TextField(controller: nameCtrl),
-      onConfirm: () {
-        controller.addCategory(nameCtrl.text);
-        nameCtrl.clear();
-        Get.back();
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Categories")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addCategory,
-        child: const Icon(Icons.add),
+      appBar: AppBar(title: const Text("Inventory Categories")),
+
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _addCategoryDialog,
+        icon: const Icon(Icons.add),
+        label: const Text("New Category"),
       ),
-      body: Obx(() => ListView.builder(
-            itemCount: controller.categories.length,
-            itemBuilder: (_, i) {
-              final category = controller.categories[i];
-              return ListTile(
-                title: Text(category.name),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () => controller.deleteCategory(category.id),
-                ),
-                onTap: () => Get.to(() => ProductsScreen(category: category)),
-              );
-            },
+
+      body: Obx(() => Padding(
+            padding: const EdgeInsets.all(16),
+            child: GridView.builder(
+              itemCount: controller.categories.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                childAspectRatio: 1.1,
+              ),
+              itemBuilder: (_, i) {
+                final category = controller.categories[i];
+
+                return GestureDetector(
+                  onTap: () =>
+                      Get.to(() => ProductsScreen(category: category)),
+                  child: Card(
+                    child: Center(
+                      child: Text(
+                        category.name,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
           )),
+    );
+  }
+
+  void _addCategoryDialog() {
+    final ctrl = TextEditingController();
+
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Create Category"),
+        content: TextField(controller: ctrl),
+        actions: [
+          TextButton(onPressed: Get.back, child: const Text("Cancel")),
+          ElevatedButton(
+            onPressed: () {
+              controller.addCategory(ctrl.text);
+              Get.back();
+            },
+            child: const Text("Save"),
+          )
+        ],
+      ),
     );
   }
 }

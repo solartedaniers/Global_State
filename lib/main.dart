@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'screens/categories_screen.dart';
+import 'theme/app_theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Inventory",
-      theme: ThemeData(primarySwatch: Colors.indigo),
+      theme: AppTheme.lightTheme,
       home: CategoriesScreen(),
     );
   }

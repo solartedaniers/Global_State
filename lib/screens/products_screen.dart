@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/inventory_controller.dart';
 import '../models/category.dart';
-import '../models/product.dart';
 import '../widgets/product_card.dart';
 
 class ProductsScreen extends StatelessWidget {
@@ -11,63 +10,30 @@ class ProductsScreen extends StatelessWidget {
 
   ProductsScreen({super.key, required this.category});
 
-  final name = TextEditingController();
-  final desc = TextEditingController();
-  final price = TextEditingController();
-
-  void _addProduct() {
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(16),
-        color: Colors.white,
-        child: Wrap(
-          children: [
-            TextField(controller: name, decoration: const InputDecoration(labelText: "Name")),
-            TextField(controller: desc, decoration: const InputDecoration(labelText: "Description")),
-            TextField(controller: price, decoration: const InputDecoration(labelText: "Price")),
-            ElevatedButton(
-              onPressed: () {
-                controller.addProduct(Product(
-                  id: DateTime.now().toString(),
-                  categoryId: category.id,
-                  name: name.text,
-                  description: desc.text,
-                  image: "https://picsum.photos/202",
-                  price: double.parse(price.text),
-                  stock: 10,
-                ));
-                Get.back();
-              },
-              child: const Text("Save"),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(category.name),
-        actions: [
-          IconButton(onPressed: _addProduct, icon: const Icon(Icons.add))
-        ],
-      ),
-      body: Obx(() {
-        final list = controller.productsByCategory(category.id);
+      appBar: AppBar(title: Text(category.name)),
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(10),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.72, // evita overflow
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+      body: Obx(() {
+        final products = controller.productsByCategory(category.id);
+
+        if (products.isEmpty) {
+          return const Center(child: Text("No products yet"));
+        }
+
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: GridView.builder(
+            itemCount: products.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 0.72,
+            ),
+            itemBuilder: (_, i) => ProductCard(product: products[i]),
           ),
-          itemCount: list.length,
-          itemBuilder: (_, i) => ProductCard(product: list[i]),
         );
       }),
     );

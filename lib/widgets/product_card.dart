@@ -12,48 +12,55 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.network(product.image, fit: BoxFit.cover, width: double.infinity),
+            child: Image.network(
+              product.image,
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
+
           Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(12),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(product.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
+
+                const SizedBox(height: 4),
 
                 Text(product.description,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 12)),
 
-                Text("\$${product.price}", style: const TextStyle(color: Colors.green)),
+                const SizedBox(height: 6),
+
+                Text("\$${product.price}",
+                    style: const TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold)),
+
+                const SizedBox(height: 6),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () => controller.decreaseStock(product)),
+                        onPressed: () => controller.decreaseStock(product),
+                        icon: const Icon(Icons.remove_circle_outline)),
+
                     Text("${product.stock}"),
+
                     IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => controller.increaseStock(product)),
+                        onPressed: () => controller.increaseStock(product),
+                        icon: const Icon(Icons.add_circle_outline)),
                   ],
                 ),
-
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => controller.deleteProduct(product.id),
-                )
               ],
             ),
           )
